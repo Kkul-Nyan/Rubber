@@ -68,9 +68,9 @@ public class VivoxVoiceManager : MonoBehaviour
     [SerializeField] string domain;
     [SerializeField] string server;
 
-    Account account;
+    Unity.Services.Vivox.Account account;
 
-    Client client => VivoxService.Instance.Client;
+    VivoxUnity.Client client => VivoxService.Instance.Client;
 
     public LoginState LoginState { get; private set; }
     public ILoginSession LoginSession;

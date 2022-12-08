@@ -13,20 +13,20 @@ public class PositionalVoice : MonoBehaviour
 
     public bool isSpeaking { get; private set; }
     public Channel3DProperties ChannelProperties { get; private set; }
-    private IChannelSession ChannelSession;
-    private string positionalChannelName;
-    private IParticipant _participant;
+    IChannelSession channelSession;
+    string positionalChannelName;
+    IParticipant participant;
     public IParticipant Participant
     {
         get
         {
-            return _participant;
+            return participant;
         }
         set
         {
             if (value != null)
             {
-                _participant = value;
+                participant = value;
                 SetupParticipantHandlers();
             }
         }
@@ -35,7 +35,7 @@ public class PositionalVoice : MonoBehaviour
     private void SetupParticipantHandlers()
     {
         PositionalGameObject = PositionalGameObject != null ? PositionalGameObject : gameObject;
-        ChannelSession = Participant.ParentChannelSession;
+        channelSession = Participant.ParentChannelSession;
         Participant.PropertyChanged -= Participant_PropertyChanged;
 
         Participant.PropertyChanged += Participant_PropertyChanged;
@@ -62,9 +62,9 @@ public class PositionalVoice : MonoBehaviour
             VxClient.Instance.vivoxDebug.DebugMessage("Cannot set 3D position: Either speaker or listener is null", vx_log_level.log_error);
             return;
         }
-        if (ChannelSession != null && ChannelSession.AudioState == ConnectionState.Connected)
+        if (channelSession != null && channelSession.AudioState == ConnectionState.Connected)
         {
-            ChannelSession.Set3DPosition(speaker.position, listener.position, listener.forward, listener.up);
+            channelSession.Set3DPosition(speaker.position, listener.position, listener.forward, listener.up);
         }
         else
         {
@@ -75,7 +75,7 @@ public class PositionalVoice : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (PositionalGameObject && PositionalGameObject.transform && ChannelSession != null && ChannelSession.AudioState == ConnectionState.Connected)
+        if (PositionalGameObject && PositionalGameObject.transform && channelSession != null && channelSession.AudioState == ConnectionState.Connected)
         {
             Update3dPosition(PositionalGameObject.transform, PositionalGameObject.transform);
         }
