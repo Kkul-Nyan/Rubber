@@ -194,7 +194,7 @@ public class Jobs
         //러버덕이면 보안관 죽음
         if (Target.jobCode < 200)
         {
-            penalty.Dead();
+            //penalty.Dead();
         }
     }
 
