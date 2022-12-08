@@ -61,4 +61,5 @@ crashlytics-build.properties
 
 Assets/.DS_Store
 .DS_Store
-**/default-2021.dwlt
+UserSettings/Layouts/default-2021.dwlt
+.DS_Store
