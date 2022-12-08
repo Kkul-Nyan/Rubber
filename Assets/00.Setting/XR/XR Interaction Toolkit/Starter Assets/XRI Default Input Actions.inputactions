@@ -316,6 +316,17 @@
                 },
                 {
                     "name": "",
+                    "id": "1bf876c6-6d65-4d1d-a6ef-1d254cf36074",
+                    "path": "<Keyboard>/#([)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Activate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "3b8b1b59-2fdc-4998-8259-50341075d9a2",
                     "path": "<XRController>{LeftHand}/trigger",
                     "interactions": "",
@@ -974,6 +985,17 @@
                     "action": "Translate Anchor",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "81cf68c4-743a-4372-9d86-04adfeb50b20",
+                    "path": "<Keyboard>/#(])",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Activate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
