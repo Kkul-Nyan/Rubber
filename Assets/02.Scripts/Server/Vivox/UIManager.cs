@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 using static Unity.Collections.AllocatorManager;
 
@@ -40,6 +41,10 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Fields
+
+    [Header("XR Controller")]
+    public GameObject xrController_L;
+    public GameObject xrController_R;
 
     [Header("UI - Main")]
     public GameObject uiMain;
