@@ -15,6 +15,7 @@ public class LoginScreenUI : MonoBehaviour
 
     private int defaultMaxStringLength = 9;
     private int PermissionAskedCount = 0;
+
     #region Unity Callbacks
 
     private EventSystem _evtSystem;
@@ -26,11 +27,11 @@ public class LoginScreenUI : MonoBehaviour
         _vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
         _vivoxVoiceManager.OnUserLoggedOutEvent += OnUserLoggedOut;
 
-#if !(UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID || UNITY_STADIA)
-        DisplayNameInput.interactable = false;
-#else
-        DisplayNameInput.onEndEdit.AddListener((string text) => { LoginToVivoxService(); });
-#endif
+//#if !(UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID || UNITY_STADIA)
+//        DisplayNameInput.interactable = false;
+//#else
+//        DisplayNameInput.onEndEdit.AddListener((string text) => { LoginToVivoxService(); });
+//#endif
         LoginButton.onClick.AddListener(() => { LoginToVivoxService(); });
 
         if (_vivoxVoiceManager.LoginState == VivoxUnity.LoginState.LoggedIn)
@@ -44,6 +45,26 @@ public class LoginScreenUI : MonoBehaviour
             var systInfoDeviceName = String.IsNullOrWhiteSpace(SystemInfo.deviceName) == false ? SystemInfo.deviceName : Environment.MachineName;
 
             DisplayNameInput.text = Environment.MachineName.Substring(0, Math.Min(defaultMaxStringLength, Environment.MachineName.Length));
+        }
+
+        if (IsMicPermissionGranted())
+        {
+            // The user authorized use of the microphone.
+            LoginToVivox();
+        }
+        else
+        {
+            // We do not have the needed permissions.
+            // Ask for permissions or proceed without the functionality enabled if they were denied by the user
+            if (IsPermissionsDenied())
+            {
+                PermissionAskedCount = 0;
+                LoginToVivox();
+            }
+            else
+            {
+                AskForPermissions();
+            }
         }
     }
 
