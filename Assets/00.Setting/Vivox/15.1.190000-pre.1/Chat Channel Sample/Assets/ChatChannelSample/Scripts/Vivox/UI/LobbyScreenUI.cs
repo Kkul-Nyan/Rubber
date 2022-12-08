@@ -8,45 +8,47 @@ using VivoxUnity;
 
 public class LobbyScreenUI : MonoBehaviour
 {
-    VivoxVoiceManager vivoxVoiceManager;
+
+    private VivoxVoiceManager _vivoxVoiceManager;
 
     public string LobbyChannelName = "lobbyChannel";
 
-    EventSystem eventSystem;
+    private EventSystem _evtSystem;
 
-    public Button logoutButton;
-    public GameObject lobbyScreen;
-    public GameObject connectionIndicatorDot;
-    public GameObject connectionIndicatorText;
+    public Button LogoutButton;
+    public GameObject LobbyScreen;
+    public GameObject ConnectionIndicatorDot;
+    public GameObject ConnectionIndicatorText;
 
-    Image image_connectionIndicatorDot;
-    Text text_connectionIndicatorDot;
+    private Image _connectionIndicatorDotImage;
+    private Text _connectionIndicatorDotText;
 
     #region Unity Callbacks
 
     private void Awake()
     {
-        vivoxVoiceManager = VivoxVoiceManager.Instance;
-
-        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
-        vivoxVoiceManager.OnUserLoggedOutEvent += OnUserLoggedOut;
-        vivoxVoiceManager.OnRecoveryStateChangedEvent += OnRecoveryStateChanged;
-
-        eventSystem = EventSystem.current;
-        if (!eventSystem)
+        _evtSystem = EventSystem.current;
+        if (!_evtSystem)
+        {
             Debug.LogError("Unable to find EventSystem object.");
-
-        image_connectionIndicatorDot = connectionIndicatorDot.GetComponent<Image>();
-        if (!image_connectionIndicatorDot)
+        }
+        _connectionIndicatorDotImage = ConnectionIndicatorDot.GetComponent<Image>();
+        if (!_connectionIndicatorDotImage)
+        {
             Debug.LogError("Unable to find ConnectionIndicatorDot Image object.");
-
-        text_connectionIndicatorDot = connectionIndicatorText.GetComponent<Text>();
-        if (!text_connectionIndicatorDot)
+        }
+        _connectionIndicatorDotText = ConnectionIndicatorText.GetComponent<Text>();
+        if (!_connectionIndicatorDotText)
+        {
             Debug.LogError("Unable to find ConnectionIndicatorText Text object.");
+        }
+        _vivoxVoiceManager = VivoxVoiceManager.Instance;
+        _vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+        _vivoxVoiceManager.OnUserLoggedOutEvent += OnUserLoggedOut;
+        _vivoxVoiceManager.OnRecoveryStateChangedEvent += OnRecoveryStateChanged;
+        LogoutButton.onClick.AddListener(() => { LogoutOfVivoxService(); });
 
-        logoutButton.onClick.AddListener(() => { LogoutOfVivoxService(); });
-
-        if (vivoxVoiceManager.LoginState == LoginState.LoggedIn)
+        if (_vivoxVoiceManager.LoginState == LoginState.LoggedIn)
         {
             OnUserLoggedIn();
         }
@@ -58,36 +60,35 @@ public class LobbyScreenUI : MonoBehaviour
 
     private void OnDestroy()
     {
-        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
-        vivoxVoiceManager.OnUserLoggedOutEvent -= OnUserLoggedOut;
-        vivoxVoiceManager.OnParticipantAddedEvent -= VivoxVoiceManager_OnParticipantAddedEvent;
-        vivoxVoiceManager.OnRecoveryStateChangedEvent -= OnRecoveryStateChanged;
+        _vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        _vivoxVoiceManager.OnUserLoggedOutEvent -= OnUserLoggedOut;
+        _vivoxVoiceManager.OnParticipantAddedEvent -= VivoxVoiceManager_OnParticipantAddedEvent;
+        _vivoxVoiceManager.OnRecoveryStateChangedEvent -= OnRecoveryStateChanged;
 
-        logoutButton.onClick.RemoveAllListeners();
+        LogoutButton.onClick.RemoveAllListeners();
     }
 
     #endregion
 
-    // [중요] 로비 채널 참가 함수
-    void JoinLobbyChannel()
+    private void JoinLobbyChannel()
     {
-        // [수정 금지] 추가된 참가자가 처리할 부분
-        vivoxVoiceManager.OnParticipantAddedEvent += VivoxVoiceManager_OnParticipantAddedEvent;
-        vivoxVoiceManager.JoinChannel(LobbyChannelName, ChannelType.NonPositional, VivoxVoiceManager.ChatCapability.TextAndAudio);
+        // Do nothing, participant added will take care of this
+        _vivoxVoiceManager.OnParticipantAddedEvent += VivoxVoiceManager_OnParticipantAddedEvent;
+        _vivoxVoiceManager.JoinChannel(LobbyChannelName, ChannelType.NonPositional, VivoxVoiceManager.ChatCapability.TextAndAudio);
     }
 
-    void LogoutOfVivoxService()
+    private void LogoutOfVivoxService()
     {
-        logoutButton.interactable = false;
+        LogoutButton.interactable = false;
 
-        vivoxVoiceManager.DisconnectAllChannels();
+        _vivoxVoiceManager.DisconnectAllChannels();
 
-        vivoxVoiceManager.Logout();
+        _vivoxVoiceManager.Logout();
     }
 
     #region Vivox Callbacks
 
-    void VivoxVoiceManager_OnParticipantAddedEvent(string username, ChannelId channel, IParticipant participant)
+    private void VivoxVoiceManager_OnParticipantAddedEvent(string username, ChannelId channel, IParticipant participant)
     {
         if (channel.Name == LobbyChannelName && participant.IsSelf)
         {
@@ -96,14 +97,15 @@ public class LobbyScreenUI : MonoBehaviour
         }
     }
 
-    void OnUserLoggedIn()
+    private void OnUserLoggedIn()
     {
-        lobbyScreen.SetActive(true);
-        logoutButton.interactable = true;
-        eventSystem.SetSelectedGameObject(logoutButton.gameObject, null);
+        LobbyScreen.SetActive(true);
+        LogoutButton.interactable = true;
+        _evtSystem.SetSelectedGameObject(LogoutButton.gameObject, null);
 
-        var lobbychannel = vivoxVoiceManager.ActiveChannels.FirstOrDefault(ac => ac.Channel.Name == LobbyChannelName);
-        if ((vivoxVoiceManager && vivoxVoiceManager.ActiveChannels.Count == 0) || lobbychannel == null)
+        var lobbychannel = _vivoxVoiceManager.ActiveChannels.FirstOrDefault(ac => ac.Channel.Name == LobbyChannelName);
+        if ((_vivoxVoiceManager && _vivoxVoiceManager.ActiveChannels.Count == 0) 
+            || lobbychannel == null)
         {
             JoinLobbyChannel();
         }
@@ -122,15 +124,14 @@ public class LobbyScreenUI : MonoBehaviour
         }
     }
 
-    void OnUserLoggedOut()
+    private void OnUserLoggedOut()
     {
-        vivoxVoiceManager.DisconnectAllChannels();
+        _vivoxVoiceManager.DisconnectAllChannels();
 
-        lobbyScreen.SetActive(false);
+        LobbyScreen.SetActive(false);
     }
 
-    // [중요] 커넨션 상태에 따른 인디케이터 이미지 컬러 변경 + 텍스트 변경
-    void OnRecoveryStateChanged(ConnectionRecoveryState recoveryState)
+    private void OnRecoveryStateChanged(ConnectionRecoveryState recoveryState)
     {
         Color indicatorColor;
         switch (recoveryState)
@@ -154,8 +155,8 @@ public class LobbyScreenUI : MonoBehaviour
                 indicatorColor = Color.white;
                 break;
         }
-        image_connectionIndicatorDot.color = indicatorColor;
-        text_connectionIndicatorDot.text = recoveryState.ToString();
+        _connectionIndicatorDotImage.color = indicatorColor;
+        _connectionIndicatorDotText.text = recoveryState.ToString();
     }
 
     #endregion

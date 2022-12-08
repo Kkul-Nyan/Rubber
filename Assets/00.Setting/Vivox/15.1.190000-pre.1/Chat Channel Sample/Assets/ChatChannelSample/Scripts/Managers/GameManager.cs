@@ -19,9 +19,16 @@ public class GameManager : MonoBehaviour
         s_Instance = this;
     }
 
+    // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(StartBuffer());
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     IEnumerator StartBuffer()
