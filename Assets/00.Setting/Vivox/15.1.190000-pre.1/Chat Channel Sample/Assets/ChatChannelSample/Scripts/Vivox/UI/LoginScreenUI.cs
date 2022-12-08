@@ -7,83 +7,72 @@ using System.Collections.Generic;
 
 public class LoginScreenUI : MonoBehaviour
 {
-    VivoxVoiceManager vivoxVoiceManager;
+    private VivoxVoiceManager _vivoxVoiceManager;
 
     public Button LoginButton;
-    public InputField if_DisplayName;
+    public InputField DisplayNameInput;
     public GameObject LoginScreen;
 
-    int defaultMaxStringLength = 9;
-    int PermissionAskedCount = 0;
-
+    private int defaultMaxStringLength = 9;
+    private int PermissionAskedCount = 0;
     #region Unity Callbacks
 
-    EventSystem eventSystem;
+    private EventSystem _evtSystem;
 
     private void Awake()
     {
-        // 하이어라키 이벤트 시스템 찾기
-        eventSystem = FindObjectOfType<EventSystem>();
-        // Vivox Voice Manager 찾기
-        vivoxVoiceManager = VivoxVoiceManager.Instance;
-        // 델리게이트와 이벤트 연결
-        vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
-        vivoxVoiceManager.OnUserLoggedOutEvent += OnUserLoggedOut;
+        _evtSystem = FindObjectOfType<EventSystem>();
+        _vivoxVoiceManager = VivoxVoiceManager.Instance;
+        _vivoxVoiceManager.OnUserLoggedInEvent += OnUserLoggedIn;
+        _vivoxVoiceManager.OnUserLoggedOutEvent += OnUserLoggedOut;
 
-        // Mac OS X, Windows 또는 Linux, IOS, Android, STADIA 환경이 아니라면
 #if !(UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID || UNITY_STADIA)
         DisplayNameInput.interactable = false;
 #else
-        // 인풋필드의 내용이 변경되면 LoginToVivoxService() 메소드 실행
-        if_DisplayName.onEndEdit.AddListener((string text) => { LoginToVivoxService(); });
-#endif  
-        // 버튼 클릭시에도 LoginToVivoxService() 메소드 실행
+        DisplayNameInput.onEndEdit.AddListener((string text) => { LoginToVivoxService(); });
+#endif
         LoginButton.onClick.AddListener(() => { LoginToVivoxService(); });
 
-        if (vivoxVoiceManager.LoginState == VivoxUnity.LoginState.LoggedIn)
+        if (_vivoxVoiceManager.LoginState == VivoxUnity.LoginState.LoggedIn)
         {
             OnUserLoggedIn();
-            if_DisplayName.text = vivoxVoiceManager.LoginSession.Key.DisplayName;
+            DisplayNameInput.text = _vivoxVoiceManager.LoginSession.Key.DisplayName;
         }
         else
         {
             OnUserLoggedOut();
             var systInfoDeviceName = String.IsNullOrWhiteSpace(SystemInfo.deviceName) == false ? SystemInfo.deviceName : Environment.MachineName;
 
-            if_DisplayName.text = Environment.MachineName.Substring(0, Math.Min(defaultMaxStringLength, Environment.MachineName.Length));
+            DisplayNameInput.text = Environment.MachineName.Substring(0, Math.Min(defaultMaxStringLength, Environment.MachineName.Length));
         }
     }
 
     private void OnDestroy()
     {
-        // 이벤트 종료
-        vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
-        vivoxVoiceManager.OnUserLoggedOutEvent -= OnUserLoggedOut;
+        _vivoxVoiceManager.OnUserLoggedInEvent -= OnUserLoggedIn;
+        _vivoxVoiceManager.OnUserLoggedOutEvent -= OnUserLoggedOut;
 
-        // 버튼 할당된 리스너 전부 삭제
         LoginButton.onClick.RemoveAllListeners();
 #if UNITY_STANDALONE || UNITY_IOS || UNITY_ANDROID || UNITY_STADIA
-        if_DisplayName.onEndEdit.RemoveAllListeners();
+        DisplayNameInput.onEndEdit.RemoveAllListeners();
 #endif
     }
 
     #endregion
 
-    // 단순 UI 함수
-    void ShowLoginUI()
+    private void ShowLoginUI()
     {
         LoginScreen.SetActive(true);
         LoginButton.interactable = true;
-        eventSystem.SetSelectedGameObject(LoginButton.gameObject, null);
+        _evtSystem.SetSelectedGameObject(LoginButton.gameObject, null);
+
     }
 
-    // 단순 UI 함수
-    void HideLoginUI()
+    private void HideLoginUI()
     {
         LoginScreen.SetActive(false);
     }
 
-    // 중요
 #if (UNITY_ANDROID && !UNITY_EDITOR) || __ANDROID__
     private bool IsAndroid12AndUp()
     {
@@ -110,8 +99,7 @@ public class LoginScreenUI : MonoBehaviour
     }
 #endif
 
-    // [중요] 마이크 사용 권한 부여 여부 함수
-    bool IsMicPermissionGranted()
+    private bool IsMicPermissionGranted()
     {
         bool isGranted = Permission.HasUserAuthorizedPermission(Permission.Microphone);
 #if (UNITY_ANDROID && !UNITY_EDITOR) || __ANDROID__
@@ -124,8 +112,7 @@ public class LoginScreenUI : MonoBehaviour
         return isGranted;
     }
 
-    // [중요] 권한 요청 함수
-    void AskForPermissions()
+    private void AskForPermissions()
     {
         string permissionCode = Permission.Microphone;
 
@@ -139,8 +126,7 @@ public class LoginScreenUI : MonoBehaviour
         Permission.RequestUserPermission(permissionCode);
     }
 
-    // [중요] 권한 거부 여부 함수
-    bool IsPermissionsDenied()
+    private bool IsPermissionsDenied()
     {
 #if (UNITY_ANDROID && !UNITY_EDITOR) || __ANDROID__
         // On Android 12 and up, we also need to ask for the BLUETOOTH_CONNECT permission
@@ -152,18 +138,17 @@ public class LoginScreenUI : MonoBehaviour
         return PermissionAskedCount == 1;
     }
 
-    // [중요]
-    void LoginToVivoxService()
+    private void LoginToVivoxService()
     {
         if (IsMicPermissionGranted())
         {
-            // 마이크로폰 사용 승인
+            // The user authorized use of the microphone.
             LoginToVivox();
         }
         else
         {
-            // 필요한 권한이 없음
-            // 사용자가 사용 권한을 거부한 경우 사용 권한을 요청하거나 기능을 사용하지 않고 계속 진행
+            // We do not have the needed permissions.
+            // Ask for permissions or proceed without the functionality enabled if they were denied by the user
             if (IsPermissionsDenied())
             {
                 PermissionAskedCount = 0;
@@ -176,32 +161,27 @@ public class LoginScreenUI : MonoBehaviour
         }
     }
 
-    // [중요]
-    void LoginToVivox()
+    private void LoginToVivox()
     {
-        // 2회 동작 금지하기 위해 버튼 비활성화
         LoginButton.interactable = false;
-        // 인풋필드에 텍스트가 없다면(닉네임 미작성시)
-        if (string.IsNullOrEmpty(if_DisplayName.text))
+
+        if (string.IsNullOrEmpty(DisplayNameInput.text))
         {
-            Debug.LogError("표시될 이름을 적어주세요.");
+            Debug.LogError("Please enter a display name.");
             return;
         }
-        // 인풋필드의 내용을 매개변수로 로그인 메소드 실행
-        vivoxVoiceManager.Login(if_DisplayName.text);
+        _vivoxVoiceManager.Login(DisplayNameInput.text);
     }
 
     #region Vivox Callbacks
 
-    void OnUserLoggedIn()
+    private void OnUserLoggedIn()
     {
-        // 단순 UI 함수
         HideLoginUI();
     }
 
-    void OnUserLoggedOut()
+    private void OnUserLoggedOut()
     {
-        // 단순 UI 함수
         ShowLoginUI();
     }
 
