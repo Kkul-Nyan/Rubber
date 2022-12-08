@@ -438,9 +438,9 @@
                 {
                     "name": "left",
                     "id": "2f25805f-44a3-4716-983c-532473bcc03c",
-                    "path": "<XRController>{LeftHand}/Primary2DAxis/x",
+                    "path": "",
                     "interactions": "",
-                    "processors": "Clamp(min=-1)",
+                    "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Translate Anchor",
                     "isComposite": false,
@@ -449,9 +449,9 @@
                 {
                     "name": "right",
                     "id": "d97ccaa1-79ae-4ca7-b7dd-be5ce92c94a6",
-                    "path": "<XRController>{LeftHand}/Primary2DAxis/x",
+                    "path": "",
                     "interactions": "",
-                    "processors": "Clamp(max=1)",
+                    "processors": "",
                     "groups": "Generic XR Controller",
                     "action": "Translate Anchor",
                     "isComposite": false,
