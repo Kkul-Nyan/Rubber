@@ -8,12 +8,22 @@ public class Mission_PartA : MonoBehaviour
     float timer = 0;
     private void OnCollisionStay(Collision collision)
     {
+        
         timer += Time.deltaTime;
         Renderer render;
         render = gameObject.GetComponent<Renderer>();
         bool cleanPlate = false;
 
-        if (collision.gameObject.name == "SM_Item_Soap_01" && changeColor <= 1 && timer > 2)
+        // 식당 - 설거지
+        if (collision.gameObject.tag == "SOAP" && changeColor <= 1 && timer > 2)
+        {
+            changeColor -= 0.3f;
+            Debug.Log("Enter");
+            render.material.color = Color.LerpUnclamped(Color.white, Color.black, changeColor);
+            timer = 0;
+        }
+        // 분수대 - 닦기
+        else if (collision.gameObject.tag == "DUSTCLOTH" && changeColor <= 1 && timer > 2)
         {
             changeColor -= 0.3f;
             Debug.Log("Enter");
