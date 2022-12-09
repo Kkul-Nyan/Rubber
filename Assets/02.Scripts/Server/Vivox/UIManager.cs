@@ -9,40 +9,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    #region Singleton
-
-    static UIManager instance;
-    public static UIManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                // Search for existing instance.
-                instance = (UIManager)FindObjectOfType(typeof(UIManager));
-
-                // Create new instance if one doesn't already exist.
-                if (instance == null)
-                {
-                    // Need to create a new GameObject to attach the singleton to.
-                    var singletonObject = new GameObject();
-                    instance = singletonObject.AddComponent<UIManager>();
-                    singletonObject.name = typeof(UIManager).ToString() + " (Singleton)";
-                }
-            }
-            // Make instance persistent even if its already in the scene
-            DontDestroyOnLoad(instance.gameObject);
-            return instance;
-        }
-    }
-
-    #endregion
-
     #region Fields
-
-    [Header("XR Controller")]
-    public GameObject xrController_L;
-    public GameObject xrController_R;
 
     [Header("UI - Main")]
     public GameObject uiMain;
@@ -72,13 +39,6 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != this && instance != null)
-        {
-            Debug.LogWarning("현재 Scene에서 다중 UIManager 발견됐습니다. 하나의 UIManager 존재해야 하므로 중복된 UIManager 삭제합니다.");
-            Destroy(this);
-            return;
-        }
-
         eventSystem = GetComponent<EventSystem>();
         vivoxVoiceManager = VivoxVoiceManager.Instance;
 
