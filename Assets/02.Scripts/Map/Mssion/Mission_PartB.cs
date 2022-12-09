@@ -13,6 +13,7 @@ public class Mission_PartB : MonoBehaviour
 
     public TMP_Text loading;
 
+   
 
     // Start is called before the first frame update
     void Start()
@@ -58,6 +59,14 @@ public class Mission_PartB : MonoBehaviour
             yield return new WaitForSecondsRealtime(1.0f);
             time--;
         }
+    }
+     // 식당 재료 리스트에 텍스트 랜덤으로 생성.
+    public GameObject[] game = new GameObject[5];
+    private void StuffList()
+    {
+       
+
+        
     }
 
 }
