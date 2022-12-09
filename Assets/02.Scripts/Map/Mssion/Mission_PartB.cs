@@ -17,7 +17,6 @@ public class Mission_PartB : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -46,6 +45,18 @@ public class Mission_PartB : MonoBehaviour
         else if(collision.gameObject.tag == "water_management")
         {
             loading.gameObject.SetActive(true);
+            StartCoroutine(Timer(30));
+        }
+    }
+    IEnumerator Timer(int time)
+    {
+        while (time > 0)
+        {
+            // int min = time / 60;
+            int sec = time % 60;
+            loading.text = ("Loading..."  + sec);
+            yield return new WaitForSecondsRealtime(1.0f);
+            time--;
         }
     }
 
