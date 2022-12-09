@@ -5,9 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
-using static Unity.Collections.AllocatorManager;
 
 public class UIManager : MonoBehaviour
 {
