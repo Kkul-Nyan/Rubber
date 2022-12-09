@@ -30,7 +30,7 @@ public class Mission_PartA : MonoBehaviour
         }
 
         // 대공원 - 분수닦기
-        if (collision.gameObject.tag == "FOUNTAIN" && changeColor <= 1 && timer > 2)
+        if (collision.gameObject.tag == "DUSTCLOTH" && changeColor <= 1 && timer > 2)
         {
                 changeColor -= 0.3f;
                 Debug.Log("Enter");
