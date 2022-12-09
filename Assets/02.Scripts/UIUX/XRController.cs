@@ -71,7 +71,7 @@ public class XRController : MonoBehaviour
     /// <param name="context">Any Trigger Button or "[", "]"</param>
     internal void XRI_Swap(InputAction.CallbackContext context)
     {
-        UIManager.Instance.gameObject.transform.SetParent(controller, false);
+        XRInteractionUIManager.Instance.gameObject.transform.SetParent(controller, false);
         Debug.Log("XRI_Swap CallBack Context : " + context);
     }
 }
