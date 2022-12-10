@@ -56,18 +56,15 @@ public class XRInteractionUIManager : MonoBehaviour
     [SerializeField] [Range(0, 100)] int volumeSFX;
     // 사운드 : 입력 - 안내(텍스트)
     [SerializeField] TMP_Text tmpt_Input;
-    // 사운드 : 입력 - 마이크 꺼짐 모드(토글)
-    [SerializeField] Toggle t_Mic;
+    // 사운드 : 입력 - 자동 감지(토글)
+    [SerializeField] Toggle t_Automatic;
+    // 사운드 : 입력 - 눌러서 말하기(토글)
+    [SerializeField] Toggle t_PressToSpeak;
     // 사운드 : 입력 - 장치(드롭다운)
     [SerializeField] TMP_Dropdown tmpd_Device;
     // 사운드 : 입력 - 마이크 증폭(슬라이더 | 0~10 | 0)
     [SerializeField] Slider s_MicAmplification;
     [SerializeField] [Range(0, 10)] int micAmplification;
-    // 사운드 : 입력 - 입력 모드(드롭다운)
-    [SerializeField] TMP_Dropdown tmpd_InputMode;
-    // 사운드 : 입력 - 민감도(슬라이더 | 0~100 | 20)
-    [SerializeField] Slider s_Sensitivity;
-    [SerializeField] [Range(0, 100)] int sensitivity;
 
     //[Header("UI - Map")]
 
