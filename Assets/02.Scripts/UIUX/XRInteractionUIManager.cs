@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class XRInteractionUIManager : MonoBehaviour
 {
@@ -39,32 +40,47 @@ public class XRInteractionUIManager : MonoBehaviour
 
     #region Fields
 
-    [Header("UI - Option")]
+    [Header("UI - Option / Output")]
     // 사운드 : 출력 - 안내(텍스트)
     [SerializeField] TMP_Text tmpt_Output;
+
     // 사운드 : 출력 - 전체 볼륨(슬라이더 | 0~100 | 100)
     [SerializeField] Slider s_VolumeAll;
-    [SerializeField] [Range(0, 100)] int volumeAll;
+    [SerializeField] int volumeAll;
+    [SerializeField] TMP_Text tmpt_VolumeAll;
+
     // 사운드 : 출력 - 음악 볼륨(슬라이더 | 0~100 | 50)
     [SerializeField] Slider s_VolumeMusic;
-    [SerializeField] [Range(0, 100)] int volumeMusic;
+    [SerializeField] int volumeMusic;
+    [SerializeField] TMP_Text tmpt_VolumeMusic;
+
     // 사운드 : 출력 - 플레이어 볼륨(슬라이더 | 0~100 | 75)
     [SerializeField] Slider s_VolumePlayer;
-    [SerializeField] [Range(0, 100)] int volumePlayer;
+    [SerializeField] int volumePlayer;
+    [SerializeField] TMP_Text tmpt_VolumePlayer;
+
     // 사운드 : 출력 - 특수 효과 볼륨(슬라이더 | 0~100 | 50)
     [SerializeField] Slider s_VolumeSFX;
-    [SerializeField] [Range(0, 100)] int volumeSFX;
+    [SerializeField] int volumeSFX;
+    [SerializeField] TMP_Text tmpt_VolumeSFX;
+
+    [Header("UI - Option / Input")]
     // 사운드 : 입력 - 안내(텍스트)
     [SerializeField] TMP_Text tmpt_Input;
+
     // 사운드 : 입력 - 자동 감지(토글)
     [SerializeField] Toggle t_Automatic;
+
     // 사운드 : 입력 - 눌러서 말하기(토글)
     [SerializeField] Toggle t_PressToSpeak;
+
     // 사운드 : 입력 - 장치(드롭다운)
     [SerializeField] TMP_Dropdown tmpd_Device;
+
     // 사운드 : 입력 - 마이크 증폭(슬라이더 | 0~10 | 0)
     [SerializeField] Slider s_MicAmplification;
-    [SerializeField] [Range(0, 10)] int micAmplification;
+    [SerializeField] int micAmplification;
+    [SerializeField] TMP_Text tmpt_MicAmplification;
 
     //[Header("UI - Map")]
 
@@ -80,6 +96,64 @@ public class XRInteractionUIManager : MonoBehaviour
             Destroy(this);
             return;
         }
+    }
+
+    private void Start()
+    {
+        SliderAddListener(s_VolumeAll, volumeAll, tmpt_VolumeAll);
+        SliderAddListener(s_VolumeMusic, volumeMusic, tmpt_VolumeMusic);
+        SliderAddListener(s_VolumePlayer, volumePlayer, tmpt_VolumePlayer);
+        SliderAddListener(s_VolumeSFX, volumeSFX, tmpt_VolumeSFX);
+        SliderAddListener(s_MicAmplification, micAmplification, tmpt_MicAmplification);
+    }
+
+    private void Update()
+    {
+        
+    }
+
+    private void LateUpdate()
+    {
+
+    }
+
+    private void OnApplicationQuit()
+    {
+        SliderRemoveListener(s_VolumeAll);
+        SliderRemoveListener(s_VolumeMusic);
+        SliderRemoveListener(s_VolumePlayer);
+        SliderRemoveListener(s_VolumeSFX);
+        SliderRemoveListener(s_MicAmplification);
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// 슬라이더의 onValueChanged 리스너 추가, 각 TMP_Text 동기화
+    /// </summary>
+    /// <param name="slider">Slider Name</param>
+    /// <param name="parseValue">전역 변수로 보관되는 정수</param>
+    /// <param name="tmp_text">UI Text</param>
+    void SliderAddListener(Slider slider, int parseValue, TMP_Text tmp_text)
+    {
+        slider.onValueChanged.AddListener(SliderValueSendText);
+
+        void SliderValueSendText(float value)
+        {
+            parseValue = (int)value;
+            tmp_text.text = parseValue.ToString();
+        }
+    }
+
+    /// <summary>
+    /// 슬라이더의 onValueChanged 리스너 삭제
+    /// </summary>
+    /// <param name="slider">Slider Name</param>
+    void SliderRemoveListener(Slider slider)
+    {
+        slider.onValueChanged.RemoveAllListeners();
     }
 
     #endregion
