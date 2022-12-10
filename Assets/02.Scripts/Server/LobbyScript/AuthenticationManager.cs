@@ -9,6 +9,9 @@ public class AuthenticationManager: MonoBehaviour
     {
         await Authentication.Login();
         Debug.Log("Success Singin");
+
+
+        
         Canvas.gameObject.SetActive(false);
         //SceneManager.LoadSceneAsync("00Test");
     }
