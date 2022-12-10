@@ -772,6 +772,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
+    Android: MODULAR_3D_TEXT
     Standalone: MODULAR_3D_TEXT
   additionalCompilerArguments: {}
   platformArchitecture: {}

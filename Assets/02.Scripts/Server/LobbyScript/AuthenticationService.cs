@@ -1,6 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.Vivox;
+using VivoxUnity;
+using UnityEngine;
+
 
 #if UNITY_EDITOR
 using ParrelSync;
@@ -31,6 +36,10 @@ public static class Authentication
         if (!AuthenticationService.Instance.IsSignedIn)
         {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            VivoxService.Instance.Initialize();
+            Debug.Log("Vivox isAuthenticated?"+ VivoxService.Instance.IsAuthenticated);
+
+            
             PlayerId = AuthenticationService.Instance.PlayerId;
         }
     }
