@@ -9,6 +9,8 @@ using Unity.Services.Relay;
 using Unity.Services.Core;
 using Unity.Services.Authentication;
 using Unity.Netcode.Transports.UTP;
+using Unity.Services.Vivox;
+using VivoxUnity;
 
 public class LobbyUIManager : NetworkBehaviour
 {
@@ -17,6 +19,7 @@ public class LobbyUIManager : NetworkBehaviour
     [SerializeField] private RoomScreen _roomScreen;
     public GameObject PL;
 
+    string playerID = Authentication.PlayerId;
 
     void Start()
     {
@@ -34,20 +37,20 @@ public class LobbyUIManager : NetworkBehaviour
 
     #region MainLobby
     private async void OnLobbySelected(Lobby lobby) {
-    
-    try {
-        await LobbyAndRelayManager.JoinLobbyWithAllocation(lobby.Id);
+;
+        try
+        {
+            await LobbyAndRelayManager.JoinLobbyWithAllocation(lobby.Id);
+            Destroy(PL);
+            LobbyAndRelayManager.isConnect = true;
+            _mainLobbyScreen.gameObject.SetActive(false);
+            _roomScreen.gameObject.SetActive(true);
 
-        Destroy(PL);
-        LobbyAndRelayManager.isConnect = true;
-        _mainLobbyScreen.gameObject.SetActive(false);
-        _roomScreen.gameObject.SetActive(true);
-
-        NetworkManager.Singleton.StartClient();
-    }
-    catch (Exception e) {
-        Debug.LogError(e);
-    }
+            NetworkManager.Singleton.StartClient();
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+        }
     
 }
     #endregion
@@ -57,8 +60,10 @@ public class LobbyUIManager : NetworkBehaviour
     {
         //Lobby Data = data;
         await LobbyAndRelayManager.CreateLobbyWithAllocation(data);
+        ChatManager.JoinChannel(data);
 
         Destroy(PL);
+        
         LobbyAndRelayManager.isConnect = true;
         _createScreen.gameObject.SetActive(false);
         _roomScreen.gameObject.SetActive(true);

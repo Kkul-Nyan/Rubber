@@ -8,8 +8,9 @@ public class AuthenticationManager: MonoBehaviour
     public async void LoginAnonymously()
     {
         await Authentication.Login();
+        //ChatManager.LoginVivox();
         Debug.Log("Success Singin");
-
+        
 
         
         Canvas.gameObject.SetActive(false);
