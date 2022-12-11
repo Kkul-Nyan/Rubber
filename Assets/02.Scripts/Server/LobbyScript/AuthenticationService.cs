@@ -37,10 +37,9 @@ public static class Authentication
         {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             VivoxService.Instance.Initialize();
-            Debug.Log("Vivox isAuthenticated?"+ VivoxService.Instance.IsAuthenticated);
-
-            
             PlayerId = AuthenticationService.Instance.PlayerId;
+            ChatManager.LoginVivox();
+
         }
     }
 }

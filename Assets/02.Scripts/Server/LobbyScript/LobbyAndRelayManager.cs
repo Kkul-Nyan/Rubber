@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 public static class LobbyAndRelayManager
 {
-    
+
     private const int HeartbeatInterval = 15;
     private const int LobbyRefreshRate =2;
 
@@ -76,12 +76,13 @@ public static class LobbyAndRelayManager
 
         };
         _currentLobby = await LobbyService.Instance.CreateLobbyAsync(data.Name,data.MaxPlayers,option);
-        Transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);  
-
+        Transport.SetHostRelayData(a.RelayServer.IpV4, (ushort)a.RelayServer.Port, a.AllocationIdBytes, a.Key, a.ConnectionData);
+        
         Heartbeat();
         PeriodicallyRefreshLobby();
     }
 
+   
     private static async void Heartbeat()
     {
         _heartbeatSource = new CancellationTokenSource();
