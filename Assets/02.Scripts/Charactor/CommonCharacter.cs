@@ -8,22 +8,34 @@ using Unity.Services.Relay.Models;
 
 public class CommonCharacter : MonoBehaviour
 {
+    private string _character_ID;
     public float speed = 1;
     public float stamina = 10;
     public int jobCode;
     public Jobs jobs = new Jobs();
     public Skills skill = new Skills();
     public Penaltys penalty = new Penaltys();
+    public GameObject knife;
+
+    public CommonCharacter target;
+
     //Buff,Debuff
     public bool isComa = false;
-    public bool isHeal = false;
+    public float comaTimer = 10f;
+    public bool isWounded = false;
+    public float woundTimer = 10f;
     public bool isBombed = false;
+    public float bombedTimer = 10f;
+
+    //Job Set
+    public bool cantVote = false;
     public bool iCanFly = false;
 
-    //
-    public bool cantVote = false;
+    //Item Pick
+    public bool haveTape = false;
+    public bool haveItem = false;
 
-
+    //Color Pick
     public MeshFilter meshFilter;
     public Mesh[] bluemesh;
 
@@ -36,21 +48,63 @@ public class CommonCharacter : MonoBehaviour
 
     private void Start()
     {
+        _character_ID = "";
+        jobs.Player = this;
+        meshFilter = GetComponent<MeshFilter>();
+
         jobCode = 100;
         JobPreset();
     }
 
     private void Update()
     {
+        //GameManager.instance.isDiscuss => 회의중이라는 bool값
+        //게임매니저에서 들고 있을것이라고 예상하여 제작.
+        //if (!GameManager.instance.isDiscuss)
+        //{
+            //상처 입으면 10초 후 기절
+            if (isWounded)
+            {
+                woundTimer -= Time.deltaTime;
+                if (woundTimer <= 0)
+                {
+                    isComa = true;
+                }
+            }
+            //폭파 당하면 10초 후 기절
+            if (isBombed)
+            {
+                bombedTimer -= Time.deltaTime;
+                if (bombedTimer <= 0)
+                {
+                    isComa = true;
+                }
+            }
+            //기절 당하면 10초 후 Dead
+            if (isComa)
+            {
+                comaTimer -= Time.deltaTime;
+                if (comaTimer <= 0)
+                {
+                    penalty.Dead(this);
+                }
+            }
+        //}
 
     }
-
-    public void JobChange(int codeForChange)
+    /// <summary>
+    /// Can change job of this Duck to 'jobCodeForChange'`s job.
+    /// </summary>
+    /// <param name="jobCodeForChange"></param>
+    public void JobChange(int jobCodeForChange)
     {
-        jobCode = codeForChange;
+        jobCode = jobCodeForChange;
         JobPreset();
     }
 
+    /// <summary>
+    /// Can preset this Duck`s Param for these job.
+    /// </summary>
     public void JobPreset()
     {
         switch (jobCode)
@@ -69,7 +123,7 @@ public class CommonCharacter : MonoBehaviour
                 jobs.Mechanic_Set(skill, penalty);
                 break;
             case 109:
-                jobs.Wing_Set(skill, penalty, ref stamina);
+                jobs.Wing_Set(ref stamina);
                 break;
             //생체덕진영
             case 201:
@@ -90,6 +144,9 @@ public class CommonCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// For use the Skills of jobs.
+    /// </summary>
     public void JobsDo()
     {
         if (isComa)
@@ -97,14 +154,16 @@ public class CommonCharacter : MonoBehaviour
             return;
         }
 
+        jobs.Target = target;
+
         switch (jobCode)
         {
             //러버덕 진영
             case 101:
-                jobs.Sherrif_Do(skill, penalty, this);
+                jobs.Sherrif_Do(skill, penalty);
                 break;
             case 102:
-                jobs.Doctor_Do(skill, penalty);
+                jobs.Doctor_Do(skill);
                 break;
             case 103:
                 jobs.Shaman_Do(skill, penalty);
@@ -120,9 +179,6 @@ public class CommonCharacter : MonoBehaviour
                 break;
             case 108:
                 jobs.Mechanic_Do(skill, penalty);
-                break;
-            case 109:
-                jobs.Wing_Do(skill, penalty, ref stamina);
                 break;
             case 110:
                 jobs.SpeedRacer_Do(skill, penalty, ref speed);
@@ -148,6 +204,9 @@ public class CommonCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// For set this Duck`s attack variation.
+    /// </summary>
     public void Attack()
     {
         if (isComa)
@@ -184,8 +243,44 @@ public class CommonCharacter : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// If you have a Item, you can Use it.
+    /// </summary>
+    public void UseItem()
+    {
+        if (haveTape)
+        {
+            skill.Heal(target, 1);
+            haveTape = false;
+        }
+        /*
+        if (haveItem)
+        {
+            skill.Item(target, 1);
+            haveItem = false;
+        }
+        */
+    }
+
+    public void GetItem()
+    {
+        if (haveTape && haveItem)
+        {
+            return;
+        }
+        if (target.CompareTag("Tape"))
+        {
+            haveTape = true;
+        }
+        if (target.CompareTag("Item"))
+        {
+            haveItem = true;
+        }
+    }
+
     public void RubberDuckRun(bool isRun)
     {
+        
         if (isRun)
         {
             stamina -= Time.deltaTime;
@@ -197,10 +292,20 @@ public class CommonCharacter : MonoBehaviour
             {
 
             }
+            if (jobCode == 109)
+            {
+                //콜라이더 일시제거(벽 및 캐릭터간 물리력 제거)
+                this.GetComponent<Collider>().enabled = false;
+            }
         }
         else
         {
             speed = 1;
+            if (jobCode == 109)
+            {
+                //콜라이더 재생(벽 및 캐릭터간 물리력 재생)
+                this.GetComponent<Collider>().enabled = true;
+            }
         }
     }
 }

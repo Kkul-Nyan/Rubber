@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Jobs
 {
+    private CommonCharacter player;
     private CommonCharacter target;
     private GameObject target_Gimmick;
     private int canUse;
+    private int canAttack;
 
+    public CommonCharacter Player { get => player; set => player = value; }
     public CommonCharacter Target { get => target; set => target = value; }
     public GameObject Target_Gimmick { get => target_Gimmick; set => target_Gimmick = value; }
     public int CanUse { get => canUse; set => canUse = value; }
+    public int CanAttack { get => canAttack; set => canAttack = value; }
 
     //code 101
-    public void Sherrif_Do(Skills skills, Penaltys penalty, CommonCharacter player)
+    public void Sherrif_Do(Skills skills, Penaltys penalty)
     {
         //목표 플레이어를 죽임
         skills.MeleeAttack(Target, CanUse);
@@ -22,7 +26,7 @@ public class Jobs
         //러버덕이면 보안관 죽음
         if (Target.jobCode < 200)
         {
-            penalty.Dead(player);
+            penalty.Dead(Player);
         }
     }
 
@@ -33,11 +37,11 @@ public class Jobs
         penalty.IDontKnowWhoYouAre(true);
     }
 
-    public void Doctor_Do(Skills skills, Penaltys penalty)
+    public void Doctor_Do(Skills skills)
     {
         //목표 플레이어의 상태 수정(죽음->보통)
         //상태 수정 성공시 기능 일시정지(다음턴까지)
-        skills.Heal(Target, CanUse);
+        CanUse = skills.Heal(Target, CanUse);
     }
 
     //code 103
@@ -109,16 +113,10 @@ public class Jobs
     }
 
     //code 109
-    public void Wing_Set(Skills skills, Penaltys penalty, ref float stamina)
+    public void Wing_Set(ref float stamina)
     {
         //스태미나 양 1/2배
-        //stamina *= 0.5f;
-    }
-
-    public void Wing_Do(Skills skills, Penaltys penalty, ref float stamina)
-    {
-        //달리는중 장애물의 방해를 받지않음
-        //skills.ICanFly(stamina);
+        stamina *= 0.5f;
     }
 
     //code 110
@@ -148,7 +146,7 @@ public class Jobs
     public void Blind_Attack(Skills skills, Penaltys penalty)
     {
         //근접공격 가능(무제한)
-        skills.MeleeAttack(Target, -1);
+        skills.MeleeAttack(Player, -1);
     }
 
 
@@ -190,7 +188,12 @@ public class Jobs
     public void Bully_Do(Skills skills, Penaltys penalty)
     {
         //러버덕 채팅금지
-        skills.ShutUp(Target);
+        /*
+        if (isDiscussing)
+        {
+            skills.ShutUp(Target, CanUse);
+        }
+        */
     }
 
     public void Bully_Attack(Skills skills, Penaltys penalty)
@@ -229,7 +232,7 @@ public class Jobs
     public void DeadDuck_Set(CommonCharacter player)
     {
         //콜라이더 제거(벽 및 캐릭터간 물리력 제거)
-
+        player.GetComponent<Collider>().enabled = false;
         //채팅 서버(데드덕 채팅 서버) 가입 및 현 채팅(산 자의 채팅 서버) 서버 채금
 
         //레이어 변경(데드덕) -> (feat 정현기 도움 필요)

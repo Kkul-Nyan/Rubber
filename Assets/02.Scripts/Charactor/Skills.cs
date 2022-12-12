@@ -9,12 +9,16 @@ public class Skills
     {
         //근거리 공격
         //칼 활성화(칼에는 colider가 있음) -> 버튼 클릭시에만 활성화
-        //
+        if (canUse != 0)
+        {
+            player.knife.SetActive(true);
+            canUse--;
+        }
         //칼 colider에 닿은 개체는 기절
         //기절 후 10초? 안에 힐 없을 시 죽음(301(데드덕) 전직)
     }
 
-    public void NeedleGun(CommonCharacter player, int canUse)
+    public void NeedleGun(CommonCharacter target, int canUse)
     {
         //중거리 공격
         //스킬 발동시 ray(컨트롤러)에 닿은 개체에 디버프 시전 -> 10초 후 기절
@@ -28,18 +32,31 @@ public class Skills
         //개체 충돌시 destroy
     }
 
-    public void PresentBomb(CommonCharacter player)
+    public void PresentBomb(CommonCharacter target)
     {
         //타겟 러버덕에게 페널티 Bombed부여
-        player.isBombed = true;
-        player.penalty.Bombed(player);
+        target.isBombed = true;
     }
 
     //회복스킬
-    public void Heal(CommonCharacter player, int canUse)
+    public int Heal(CommonCharacter target, int canUse)
     {
         //죽은 오리 살림(턴1회) ->
+        if (canUse > 0 && target.isComa == true)
+        {
+            target.isComa = false;
+            target.comaTimer = 10f;
+            canUse--;
+        }
         //중거리 당한 오리 소모없이 치료
+        else if (target.isWounded == true)
+        {
+            target.isWounded = false;
+            target.woundTimer = 10f;
+        }
+
+
+        return canUse;
     }
 
     //스테이터스 변화

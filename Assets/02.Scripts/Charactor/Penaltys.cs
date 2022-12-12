@@ -4,29 +4,17 @@ using UnityEngine;
 
 public class Penaltys
 {
-    public void Coma(CommonCharacter player)
+    public void Coma(CommonCharacter target)
     {
         //이동 및 행동 제약(캐릭터 쓰러짐)
-        player.isComa = true;
-        player.speed = 0;
-        //살해 당한면 기절 10초 후 Dead
-        float time = 0;
-
-        while (!player.isHeal)
-        {
-            time += Time.deltaTime;
-            if (time >= 10)
-            {
-                Dead(player);
-                break;
-            }
-        }
+        target.isComa = true;
+        target.speed = 0;
     }
 
-    public void Dead(CommonCharacter player)
+    public void Dead(CommonCharacter target)
     {
         //DeadDuck으로 잡체인지
-        player.JobChange(301);
+        target.JobChange(301);
     }
 
     public void CantVote(CommonCharacter player)
@@ -44,22 +32,6 @@ public class Penaltys
     public void ICantSee(bool onOff)
     {
         //장님 디버프 -> 카메라 세팅
-    }
-
-    public void Bombed(CommonCharacter player)
-    {
-        //폭탄 타이머가 다될때 이 디버프를 가진 플레이어는 사망
-        float time = 0;
-
-        while (player.isBombed)
-        {
-            time += Time.deltaTime;
-            if (time >= 10)
-            {
-                Coma(player);
-                break;
-            }
-        }
     }
 
     public void GunSound()
