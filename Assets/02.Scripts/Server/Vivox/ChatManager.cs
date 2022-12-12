@@ -10,11 +10,14 @@ public class ChatManager : MonoBehaviour
 {
     public static ILoginSession LoginSession;
     public static IChannelSession m_channelSession = null;
-
+    
+    #region vivox 로그인체크
     public void checklogin()
     {
         Debug.Log("Vivox LoginState :" + LoginSession.State);
     }
+    #endregion
+    
     #region 비복스 로그인
     /* 
     비복스 init을 해주었으면 로그인을 해주어야 한다. 로비이전에 먼저 로그인을 해주는 이유는 내 목소리를 듣고 미리 사운드를 체크 할수 있게 만들어줄려는 의도임
@@ -89,4 +92,20 @@ public class ChatManager : MonoBehaviour
         LoginSession.Logout();
     }
     #endregion
+
+    #region 비복스 채널 나감
+    
+    public static void LeaveVivoxChannel(string lobbyid)
+    {
+        Channel channel = new Channel(lobbyid + "vivox");
+        m_channelSession = LoginSession.GetChannelSession(channel);
+        if(m_channelSession != null)
+        {
+            m_channelSession.Disconnect();
+            LoginSession.DeleteChannelSession(channel);
+            Debug.Log("disconnect channel");
+        }
+    }
+    #endregion
+
 }
