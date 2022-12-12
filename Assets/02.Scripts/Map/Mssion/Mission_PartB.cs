@@ -10,7 +10,7 @@ public class Mission_PartB : MonoBehaviour
 {
     
     public GameObject can;
-    public GameObject gameCard;
+    public GameObject gamePanel;
 
     public TMP_Text loading;
 
@@ -44,7 +44,8 @@ public class Mission_PartB : MonoBehaviour
         else if(collision.gameObject.tag == "game")
         {
             Destroy(collision.gameObject);
-            gameCard.SetActive(true);
+            gamePanel.SetActive(true);
+
         }
         // 보안카드 - 수질관리기
         else if(collision.gameObject.tag == "water_management")
@@ -97,7 +98,7 @@ public class Mission_PartB : MonoBehaviour
         }
 
         
-    }// 배열 자체를 안에서 섞기 0, 3까지 꺼내기
+    }
 
 
 }
