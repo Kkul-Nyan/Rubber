@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 
 
+
 public class Mission_PartB : MonoBehaviour
 {
     
@@ -13,11 +14,14 @@ public class Mission_PartB : MonoBehaviour
 
     public TMP_Text loading;
 
+    public TMP_Text stuffText;
+
    
 
     // Start is called before the first frame update
     void Start()
     {
+        StuffList();
     }
 
     // Update is called once per frame
@@ -61,12 +65,39 @@ public class Mission_PartB : MonoBehaviour
         }
     }
      // 식당 재료 리스트에 텍스트 랜덤으로 생성.
-    public GameObject[] game = new GameObject[5];
+    public Stuff[] stuffs = new Stuff[5];
+    public TMP_Text[] stuffsText;
+
+
     private void StuffList()
     {
+        // string[] stuffsName = new string[] { "corn", "tomato", "pumpkin", "sausage", "bread" };
+        // string randomName = stuffs[Random.Range(0, stuffs.Length)];
+        // stuffText.text = randomName;
+        bool[] randomFlages = new bool[stuffs.Length];
+        List<int> randomNumbers = new List<int>();
        
 
+        while(randomNumbers.Count < stuffs.Length)
+        {
+            int random = Random.Range(0, stuffs.Length);
+            if (randomFlages[random] == true)
+            {
+                continue;
+            }
+            else
+            {
+                randomFlages[random] = true;
+                randomNumbers.Add(random);
+            }
+        }
+        for(int i = 0; i < stuffsText.Length; i++)
+        {
+            stuffsText[i].text = stuffs[randomNumbers[i]].stuffName;
+        }
+
         
-    }
+    }// 배열 자체를 안에서 섞기 0, 3까지 꺼내기
+
 
 }
