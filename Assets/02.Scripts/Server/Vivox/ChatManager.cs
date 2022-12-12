@@ -39,12 +39,12 @@ public class ChatManager : MonoBehaviour
         });
 
     }
-    public static void JoinChannel(LobbyData lobby)
+    public static void JoinChannel(string lobbyid)
     {
         if (LoginSession.State == LoginState.LoggedIn)
         {
             ChannelType channelType = ChannelType.Positional;
-            Channel channel = new Channel(lobby.Name+"vivox", channelType, null);
+            Channel channel = new Channel(lobbyid +"vivox", channelType, null);
 
             m_channelSession = LoginSession.GetChannelSession(channel);
         
