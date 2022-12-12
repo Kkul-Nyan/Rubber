@@ -32,10 +32,10 @@ public class Mission_PartA : MonoBehaviour
         // 대공원 - 분수닦기
         if (collision.gameObject.tag == "DUSTCLOTH" && changeColor <= 1 && timer > 2)
         {
-                changeColor -= 0.3f;
-                Debug.Log("Enter");
-                render.material.color = Color.LerpUnclamped(Color.black, Color.gray, changeColor);
-                timer = 0;
+            changeColor -= 0.3f;
+            Debug.Log("Enter");
+            render.material.color = Color.LerpUnclamped(Color.black, Color.gray, changeColor);
+            timer = 0;
         }
         else if (changeColor <= 0)
         {

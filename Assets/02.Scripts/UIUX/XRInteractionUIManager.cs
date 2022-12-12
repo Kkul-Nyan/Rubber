@@ -6,6 +6,11 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using VivoxUnity;
+using Unity.Services.Vivox;
+using UnityEditor.PackageManager;
+using Unity.Services.Core;
+using UnityEngine.InputSystem;
 
 public class XRInteractionUIManager : MonoBehaviour
 {
@@ -105,11 +110,19 @@ public class XRInteractionUIManager : MonoBehaviour
         SliderAddListener(s_VolumePlayer, volumePlayer, tmpt_VolumePlayer);
         SliderAddListener(s_VolumeSFX, volumeSFX, tmpt_VolumeSFX);
         SliderAddListener(s_MicAmplification, micAmplification, tmpt_MicAmplification);
+
+        //Debug.Log("Avaiable Devices Count:" + VivoxService.Instance.Client.AudioInputDevices.AvailableDevices.Count);
+        //foreach (IAudioDevice device in VivoxService.Instance.Client.AudioInputDevices.AvailableDevices)
+        //{
+        //    Debug.Log("Device: " + device.Name);
+        //}
+
+        /// Dropdown Dictionary Value
     }
 
     private void Update()
     {
-        
+
     }
 
     private void LateUpdate()
@@ -131,7 +144,8 @@ public class XRInteractionUIManager : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// 슬라이더의 onValueChanged 리스너 추가, 각 TMP_Text 동기화
+    /// ＃Slider onValueChanged 리스너 추가
+    /// ＃SliderValueSendText(float value) 각 TMP_Text 동기화
     /// </summary>
     /// <param name="slider">Slider Name</param>
     /// <param name="parseValue">전역 변수로 보관되는 정수</param>
@@ -148,12 +162,38 @@ public class XRInteractionUIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 슬라이더의 onValueChanged 리스너 삭제
+    /// Slider onValueChanged 리스너 삭제
     /// </summary>
     /// <param name="slider">Slider Name</param>
     void SliderRemoveListener(Slider slider)
     {
         slider.onValueChanged.RemoveAllListeners();
+    }
+
+    public void SetAudioDevices(IAudioDevice targetInput = null, IAudioDevice targetOutput = null)
+    {
+        IAudioDevices inputDevices = VivoxService.Instance.Client.AudioInputDevices;
+        IAudioDevices outputDevices = VivoxService.Instance.Client.AudioOutputDevices;
+        if (targetInput != null && targetInput != VivoxService.Instance.Client.AudioInputDevices.ActiveDevice)
+        {
+            VivoxService.Instance.Client.AudioInputDevices.BeginSetActiveDevice(targetInput, ar =>
+            {
+                if (ar.IsCompleted)
+                {
+                    VivoxService.Instance.Client.AudioInputDevices.EndSetActiveDevice(ar);
+                }
+            });
+        }
+        if (targetOutput != null && targetOutput != VivoxService.Instance.Client.AudioOutputDevices.ActiveDevice)
+        {
+            VivoxService.Instance.Client.AudioOutputDevices.BeginSetActiveDevice(targetOutput, ar =>
+            {
+                if (ar.IsCompleted)
+                {
+                    VivoxService.Instance.Client.AudioOutputDevices.EndSetActiveDevice(ar);
+                }
+            });
+        }
     }
 
     #endregion
