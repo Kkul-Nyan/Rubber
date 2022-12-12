@@ -72,6 +72,8 @@ public class XRController : MonoBehaviour
     internal void XRI_Swap(InputAction.CallbackContext context)
     {
         XRInteractionUIManager.Instance.gameObject.transform.SetParent(controller, false);
+#if UNITY_EDITOR
         Debug.Log("XRI_Swap CallBack Context : " + context);
+#endif
     }
 }
