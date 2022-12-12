@@ -41,6 +41,7 @@ public class LobbyUIManager : NetworkBehaviour
         try
         {
             await LobbyAndRelayManager.JoinLobbyWithAllocation(lobby.Id);
+            ChatManager.JoinChannel(lobby.Name);
             Destroy(PL);
             LobbyAndRelayManager.isConnect = true;
             _mainLobbyScreen.gameObject.SetActive(false);
@@ -60,7 +61,7 @@ public class LobbyUIManager : NetworkBehaviour
     {
         //Lobby Data = data;
         await LobbyAndRelayManager.CreateLobbyWithAllocation(data);
-        ChatManager.JoinChannel(data);
+        ChatManager.JoinChannel(data.Name);
 
         Destroy(PL);
         
