@@ -6,6 +6,11 @@ TagManager:
   tags:
   - SOAP
   - DUSTCLOTH
+  - CORN
+  - TOMATO
+  - CABBAGE
+  - ' pumpkiPUMPKIN'
+  - CARROT
   layers:
   - Default
   - TransparentFX
