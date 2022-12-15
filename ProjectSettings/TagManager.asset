@@ -12,6 +12,9 @@ TagManager:
   - ' pumpkiPUMPKIN'
   - CARROT
   - TAPE
+  - Vegetalble
+  - Stuffs
+  - DUCK
   layers:
   - Default
   - TransparentFX
