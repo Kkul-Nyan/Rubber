@@ -44,4 +44,22 @@ public class Mission_PartA : MonoBehaviour
         }
 
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+        timer += Time.deltaTime;
+        bool cleanRinger = false;
+
+        if (other.gameObject.tag == "DUCK" && timer >= 10)
+        {
+            cleanRinger = true;
+            Debug.Log("cleanRinger = " + cleanRinger);
+        }
+        else if (timer < 10)
+        {
+            Debug.Log("Stay");
+        }
+    }
+
+
 }
