@@ -4,42 +4,85 @@ using UnityEngine;
 
 public class Skills
 {
+    string showText;
+
     //공격스킬
-    public void MeleeAttack(CommonCharacter player, int canUse)
+    public int MeleeAttack(CommonCharacter player, int canUse)
     {
         //근거리 공격
         //칼 활성화(칼에는 colider가 있음) -> 버튼 클릭시에만 활성화
-        //
+        if (canUse != 0)
+        {
+            player.knife.SetActive(true);
+            canUse--;
+        }
         //칼 colider에 닿은 개체는 기절
         //기절 후 10초? 안에 힐 없을 시 죽음(301(데드덕) 전직)
+        return canUse;
     }
 
-    public void NeedleGun(CommonCharacter player, int canUse)
+    public int NeedleGun(CommonCharacter target, int canUse)
     {
         //중거리 공격
         //스킬 발동시 ray(컨트롤러)에 닿은 개체에 디버프 시전 -> 10초 후 기절
         //기절 후 10초? 안에 힐 없을 시 죽음(301(데드덕) 전직)
+        canUse--;
+        return canUse;
     }
 
-    public void Magnum(CommonCharacter player, int canUse)
+    public int Magnum(CommonCharacter player, int canAttack)
     {
         //장거리 공격
-        //총알 활성화(총알에는 colider가 있음) -> 버튼 클릭시 앞으로 발사
-        //개체 충돌시 destroy
+        if (canAttack != 0)
+        {
+            //총알 활성화(총알에는 colider가 있음) -> 버튼 클릭시 앞으로 발사
+
+            //개체 충돌시 destroy
+
+            canAttack--;
+        }
+
+        
+        return canAttack;
     }
 
-    public void PresentBomb(CommonCharacter player)
+    public void PresentBomb(CommonCharacter target)
     {
         //타겟 러버덕에게 페널티 Bombed부여
-        player.isBombed = true;
-        player.penalty.Bombed(player);
+        target.isBombed = true;
+    }
+
+    public bool PresentBomb(CommonCharacter target, float timeLeft)
+    {
+        //타겟 러버덕에게 페널티 Bombed부여
+        if (target is not null)
+        {
+            target.isBombed = true;
+            target.bombedTimer = timeLeft;
+            return false;
+        }
+        return true;
     }
 
     //회복스킬
-    public void Heal(CommonCharacter player, int canUse)
+    public int Heal(CommonCharacter target, int canUse)
     {
         //죽은 오리 살림(턴1회) ->
+        if (canUse > 0 && target.isComa == true)
+        {
+            target.isComa = false;
+            target.comaTimer = 10f;
+            canUse--;
+        }
         //중거리 당한 오리 소모없이 치료
+        else if (target.isWounded == true)
+        {
+            target.isWounded = false;
+            target.woundTimer = 10f;
+        }
+
+
+        return canUse;
     }
 
     //스테이터스 변화
@@ -47,15 +90,6 @@ public class Skills
     {
         //스태미너 총량 증가(1.5배정도)
         stamina *= 1.5f;
-    }
-
-    public void Adrenaline(ref float speed, int canUse)
-    {
-        if (canUse > 0)
-        {
-            //이동속도 1.5배
-            speed *= 1.5f;
-        }
     }
 
     public void ICanFly(float stamina)
@@ -71,9 +105,11 @@ public class Skills
     }
 
     //카메라 변화
-    public void TopView(int canUse)
+    public int TopView(int canUse)
     {
         //탑뷰시점에서 맵 확인 가능, 그 턴에 사망한 시체 위치 확인
+        canUse--;
+        return canUse;
     }
 
     public void DogNose()
@@ -91,12 +127,13 @@ public class Skills
 
 
     //정보 조작or입수
-    public void ImYourAlly()
+    public void ImYourAlly(CommonCharacter player)
     {
         //시작시 생오리(마피아)리스트에 올라감 -> 생오리들이 아군으로 착각
+        player.iAmBetlayer = true;
     }
 
-    public void TellMeYourJob(CommonCharacter player, int canUse)
+    public int TellMeYourJob(CommonCharacter target, int canUse)
     {
         //투표중 선택한 오리의 직업정보 알수있음
         //코드별 직업명 세팅
@@ -125,18 +162,35 @@ public class Skills
         jobName[301] = "DeadDuck";
 
         //표시될 직업명을 표시용 변수에 입력
-        string showText = "ERROR!";
-        if (jobName[player.jobCode] is not null)
+        showText = "ERROR!";
+        if (jobName[target.jobCode] is not null && canUse != 0)
         {
-            showText = jobName[player.jobCode];
+            showText = jobName[target.jobCode];
+            canUse--;
         }
-        
+        //메시지박스에 상대방 이름(showText) 출력
 
+        //출력 후 변수 초기화
+        showText = "";
+        return canUse;
     }
 
-    public void ShowMeYourItem(CommonCharacter player)
+    public void ShowMeYourItem(CommonCharacter target)
     {
         //대상이 가지고 있는 아이템(목록)을 볼 수 있음
+        showText = "Nothing";
+        if (target.haveTape)
+        {
+            showText = "Tape";
+        }
+        if (target.haveItem)
+        {
+            showText = "Item";
+        }
+        //메시지박스에 상대방이 가진 아이템(showText) 출력
+
+        //출력 후 변수 초기화
+        showText = "";
     }
 
 
@@ -160,15 +214,31 @@ public class Skills
         //대기형 미션시간 50%단축(중요도 B)
     }
 
-    public void ShutUp(CommonCharacter player)
+    public int ShutUp(CommonCharacter target, int canUse)
     {
-        //투표중에 한명을 채금시킬수 있음
+        if (canUse != 0)
+        {
+            //투표중에 한명을 채금시킬수 있음
+            target.isSilence = true;
+            canUse--;
+        }
+        return canUse;
     }
 
-    public void Metamolphosis(CommonCharacter target)
+    public int Metamolphosis(CommonCharacter player, CommonCharacter target, int canUse)
     {
-        //타겟 러버덕의 색상을 그대로 베껴옴
-        Mesh mesh = target.meshFilter.mesh;
+        
         //매 턴마다 한번 교체가능
+        if (canUse != 0)
+        {
+            //타겟 러버덕의 색상을 그대로 베껴옴
+            Mesh mesh = target.meshFilter.mesh;
+            player.meshFilter.mesh = mesh;
+            canUse--;
+        }
+
+        return canUse;
+        
+
     }
 }
