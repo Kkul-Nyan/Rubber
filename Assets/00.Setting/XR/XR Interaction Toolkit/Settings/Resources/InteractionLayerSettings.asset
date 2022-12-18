@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LayerNames:
   - Default
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Toothpaste
+  - Waste_Paper
+  - Kitchen_Towel
+  - Gargl
+  - Toolbox
+  - Box
   - 
   - 
   - 
