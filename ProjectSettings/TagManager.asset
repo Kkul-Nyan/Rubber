@@ -15,6 +15,9 @@ TagManager:
   - Vegetalble
   - Stuffs
   - DUCK
+  - SPHERERED
+  - SPHEREYELLOW
+  - SPHEREBLUE
   layers:
   - Default
   - TransparentFX
