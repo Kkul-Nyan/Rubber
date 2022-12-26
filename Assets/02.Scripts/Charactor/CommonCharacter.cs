@@ -55,7 +55,7 @@ public class CommonCharacter : MonoBehaviour
     {
         switch (jobCode)
         {
-            //·¯¹ö´öÁø¿µ
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             case 102:
                 jobs.Doctor_Set(penalty);
                 break;
@@ -71,7 +71,7 @@ public class CommonCharacter : MonoBehaviour
             case 109:
                 jobs.Wing_Set(skill, penalty, ref stamina);
                 break;
-            //»ýÃ¼´öÁø¿µ
+            //ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             case 201:
                 jobs.Blind_Set(penalty);
                 break;
@@ -84,7 +84,7 @@ public class CommonCharacter : MonoBehaviour
                 jobs.DeadDuck_Set(this);
                 break;
 
-            //ÇÁ¸®¼¼ÆÃÀÌ ºÒÇÊ¿äÇÑ Á÷¾÷±º
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             default:
                 break;
         }
@@ -99,7 +99,7 @@ public class CommonCharacter : MonoBehaviour
 
         switch (jobCode)
         {
-            //·¯¹ö´ö Áø¿µ
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             case 101:
                 jobs.Sherrif_Do(skill, penalty, this);
                 break;
@@ -128,7 +128,7 @@ public class CommonCharacter : MonoBehaviour
                 jobs.SpeedRacer_Do(skill, penalty, ref speed);
                 break;
 
-            //¿À¸® Áø¿µ
+            //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             case 201:
                 jobs.Blind_Do(skill, penalty);
                 break;
@@ -142,7 +142,7 @@ public class CommonCharacter : MonoBehaviour
                 jobs.Disguiser_Do(skill, penalty);
                 break;
 
-            //Á÷¾÷½ºÅ³ÀÌ ºÒÇÊ¿äÇÑ Á÷¾÷±º
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å³ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             default:
                 break;
         }
@@ -157,7 +157,7 @@ public class CommonCharacter : MonoBehaviour
 
         switch (jobCode)
         {
-            //»ýÃ¼´öÁø¿µ
+            //ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             case 201:
                 jobs.Blind_Attack(skill, penalty);
                 break;
